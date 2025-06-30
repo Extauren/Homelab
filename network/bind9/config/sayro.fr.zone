@@ -1,0 +1,18 @@
+$TTL 2d
+
+$ORIGIN sayro.fr.
+
+@       IN      SOA  ns.sayro.fr. info.sayro.fr. (
+                     2024010400
+                     12h
+                     15m
+                     3w
+                     2h
+                     )
+
+        IN      NS  ns.sayro.fr.
+
+ns      IN      A   10.16.72.4
+@       IN      A   10.16.72.4
+*       IN      A   10.16.72.4
+www     IN      A   10.16.72.4
