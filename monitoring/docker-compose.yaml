@@ -16,6 +16,11 @@ services:
     volumes:
       - influxdb2-data:/var/lib/influxdb2
       - influxdb2-config:/etc/influxdb2
+    healthcheck:
+      test: [CMD, curl, -f, http://influxdb:8086/health]
+      interval: 5s
+      timeout: 10s
+      retries: 20
   prometheus:
     image: prom/prometheus
     container_name: prometheus
@@ -33,10 +38,30 @@ services:
       resources:
         limits:
           memory: 1G
-
+  scrutiny:
+    image: 'ghcr.io/analogj/scrutiny:master-web'
+    container_name: scrutiny
+    restart: unless-stopped
+    ports:
+      - '8080:8080'
+    volumes:
+      - scrutiny-data:/opt/scrutiny/config
+      - ./scrutiny.yaml:/opt/scrutiny/config/scrutiny.yaml
+    env_file:
+      - .env
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, curl, -f, http://influxdb:8080/api/health]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 10s
 
 volumes:
   grafana-storage: {}
   influxdb2-data: {}
   influxdb2-config: {}
   prometheus-data: {}
+  scrutiny-data: {}
